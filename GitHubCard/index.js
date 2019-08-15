@@ -3,10 +3,6 @@
 https://api.github.com/users/<your name>
 */
 
-axios.get('https://api.github.com/users/barbara-mayfield')
-
-console.log(axios.get('https://api.github.com/users/barbara-mayfield'))
-
 /* Step 2: Inspect and study the data coming back, this is YOUR 
 github info! You will need to understand the structure of this 
 data in order to use it to build your component function 
@@ -50,13 +46,16 @@ Using DOM methods and properties, create a component that will return the follow
 
 */
 
-const createCard = gitResponse => {
-  const userData = gitResponse.data;
-  console.log(userData);
 
+const createCard = data => {
+  const userData = data;
+  
+  const card = document.createElement('div')
+  card.classList.add('card');
+  
   const cardInfo = document.createElement('div')
   cardInfo.classList.add('card-info')
-
+  
   const cardImg = document.createElement('img')
   cardImg.src = userData.avatar_url;
   
@@ -72,8 +71,10 @@ const createCard = gitResponse => {
   location.textContent = `Location: ${userData.location}`;
   
   const profile = document.createElement('p')
-  profile.setAttribute('href', userData.html_url);
-  profile.textContent = userData.html_url;
+  
+  const profileLink = document.createElement('a');
+  profileLink.setAttribute('href', userData.html_url);
+  profileLink.textContent = userData.html_url;
   
   const followers = document.createElement('p')
   followers.textContent = `Followers: ${userData.followers}`;
@@ -84,19 +85,33 @@ const createCard = gitResponse => {
   const bio = document.createElement('p')
   bio.textContent = `Bio: ${userData.bio}`;
   
-  cardImg.prepend(cardInfo)
+  card.appendChild(cardInfo);
+  cardInfo.appendChild(cardImg)
   cardInfo.appendChild(cardH3)
   cardInfo.appendChild(usernameInfo)
   cardInfo.appendChild(location)
   cardInfo.appendChild(profile)
+  profile.appendChild(profileLink)
   cardInfo.appendChild(followers)
   cardInfo.appendChild(following)
   cardInfo.appendChild(bio)
   
-  return cardInfo;
+  return card;
 }
 
-const card = document.querySelector('.cards')
+// console.log(cards);
+
+axios.get('https://api.github.com/users/barbara-mayfield')
+.then((response) => {
+    const cards = document.querySelector('.cards');
+    const newCard = createCard(response.data)
+        cards.appendChild(newCard)
+    })
+    .catch((error) => {
+      console.log(error);
+})
+
+console.log(axios.get(`https://api.github.com/users/barbara-mayfield`));
 
 /* List of LS Instructors Github username's: 
 tetondan
